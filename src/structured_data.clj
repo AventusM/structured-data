@@ -201,7 +201,7 @@
   ;1. Extract authors from the book
   ;2. conj to the extracted list
   ;3. assoc to original book-keyword :authors
-  (let [old-authors (:authors book) ;Kaarisulkeet, muut eivät toteuta haluttua lopputulosta
+  (let [old-authors (:authors book)
         new-authors (conj old-authors new-author)
         replaced-authors (assoc book :authors new-authors)]
     replaced-authors
@@ -252,12 +252,17 @@
 
 
 
+(def dick {:name "Philip K. Dick", :birth-year 1928, :death-year 1982})
+(def zelazny {:name "Roger Zelazny", :birth-year 1937, :death-year 1995})
 
+(def deus-irae {:title "Deus Irae", :authors #{dick, zelazny}})
 
+(def jrrtolkien {:name "J. R. R. Tolkien" :birth-year 1892 :death-year 1973})
+(def christopher {:name "Christopher Tolkien" :birth-year 1924})
+(def kay {:name "Guy Gavriel Kay" :birth-year 1954})
 
-
-
-
+(def silmarillion {:title "Silmarillion"
+                   :authors #{jrrtolkien, christopher, kay}})
 
 (def china {:name "China Miéville", :birth-year 1972})
 (def octavia {:name "Octavia E. Butler"
@@ -273,6 +278,7 @@
                      :authors #{friedman, felleisen}})
 
 (def books [cities, wild-seed, embassytown, little-schemer])
+(def authors #{china, felleisen, octavia, friedman})
 
 
 
@@ -357,9 +363,9 @@
   (contains? (get book :authors) author)
   )
 
-(has-author? cities china)
-(has-author? cities felleisen)
-(has-author? little-schemer felleisen)
+;(has-author? cities china)
+;(has-author? cities felleisen)
+;(has-author? little-schemer felleisen)
 
 (defn
   authors
@@ -467,9 +473,9 @@
     :else (apply str (count books) " books. " (interpose " " (map book->string books)))
     ))
 
-(books->string [])
-(books->string [cities])
-(books->string [little-schemer, cities, wild-seed])
+;(books->string [])
+;(books->string [cities])
+;(books->string [little-schemer, cities, wild-seed])
 
 ;ALL OF THE ABOVE PASS
 ;ALL OF THE ABOVE PASS
@@ -480,20 +486,39 @@
 (defn
   books-by-author
   [author books]
+  ;How to split a collection so its items can be used individually
+  (filter (fn [book] (has-author? book author)) books)
   )
 
-(books-by-author china books)
+;(books-by-author china books)
 
 
+(defn
+  author-by-name
+  [name authors]
+  ;(map :name authors)
+  )
 
-(defn author-by-name [name authors]
-  :-)
+;(author-by-name "Octavia E. Butler" #{octavia, china})
+;(author-by-name "Octavia E. Butler" #{octavia, felleisen})
 
-(defn living-authors [authors]
-  :-)
+(defn
+  living-authors
+  [authors]
+  (filter (fn [author] (alive? author)) authors)
+  )
 
-(defn has-a-living-author? [book]
-  :-)
+;(living-authors authors) - Failaa tässä -> kaikki testit kuitenkin menee läpi
+;(living-authors #{octavia})
+;(living-authors #{china, felleisen})
+
+(defn
+  has-a-living-author?
+  [book]
+  (count living-authors (:authors book))
+  )
+
+(has-a-living-author? wild-seed)
 
 (defn books-by-living-authors [books]
   :-)
